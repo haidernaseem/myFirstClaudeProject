@@ -1,0 +1,95 @@
+<template>
+    <div class="customer-portal-nav">
+        <!-- Mobile menu toggle -->
+        <div class="nav-toggle" onclick={toggleMobileMenu}>
+            <lightning-icon icon-name="utility:menu" size="small" class="menu-icon"></lightning-icon>
+        </div>
+
+        <!-- Logo/Brand section -->
+        <div class="nav-brand">
+            <lightning-icon icon-name="standard:customer" size="medium" class="brand-icon"></lightning-icon>
+            <span class="brand-text">Customer Portal</span>
+        </div>
+
+        <!-- Desktop Navigation Menu -->
+        <nav class="nav-menu desktop-menu">
+            <ul class="nav-list">
+                <template for:each={menuItems} for:item="item">
+                    <li key={item.id} class="nav-item" data-id={item.id} onclick={handleMenuClick}>
+                        <div class="nav-link" class:active={item.isActive}>
+                            <lightning-icon icon-name={item.icon} size="x-small" class="nav-icon"></lightning-icon>
+                            <span class="nav-text">{item.label}</span>
+                            <lightning-icon if:true={item.hasSubmenu} icon-name="utility:chevronright" size="x-small" class="submenu-arrow"></lightning-icon>
+                        </div>
+                        
+                        <!-- Submenu -->
+                        <ul if:true={item.hasSubmenu} class="submenu" class:show={item.showSubmenu}>
+                            <template for:each={item.submenuItems} for:item="subItem">
+                                <li key={subItem.id} class="submenu-item" data-id={subItem.id} onclick={handleSubmenuClick}>
+                                    <div class="submenu-link">
+                                        <lightning-icon icon-name={subItem.icon} size="x-small" class="submenu-icon"></lightning-icon>
+                                        <span class="submenu-text">{subItem.label}</span>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </li>
+                </template>
+            </ul>
+        </nav>
+
+        <!-- Mobile Navigation Menu -->
+        <nav class="nav-menu mobile-menu" class:show={showMobileMenu}>
+            <ul class="nav-list-mobile">
+                <template for:each={menuItems} for:item="item">
+                    <li key={item.id} class="nav-item-mobile" data-id={item.id} onclick={handleMobileMenuClick}>
+                        <div class="nav-link-mobile" class:active={item.isActive}>
+                            <lightning-icon icon-name={item.icon} size="small" class="nav-icon-mobile"></lightning-icon>
+                            <span class="nav-text-mobile">{item.label}</span>
+                            <lightning-icon if:true={item.hasSubmenu} icon-name="utility:chevronright" size="x-small" class="mobile-submenu-arrow"></lightning-icon>
+                        </div>
+                        
+                        <!-- Mobile Submenu -->
+                        <ul if:true={item.hasSubmenu} class="submenu-mobile" class:show={item.showSubmenu}>
+                            <template for:each={item.submenuItems} for:item="subItem">
+                                <li key={subItem.id} class="submenu-item-mobile" data-id={subItem.id} onclick={handleMobileSubmenuClick}>
+                                    <div class="submenu-link-mobile">
+                                        <lightning-icon icon-name={subItem.icon} size="x-small" class="submenu-icon-mobile"></lightning-icon>
+                                        <span class="submenu-text-mobile">{subItem.label}</span>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </li>
+                </template>
+            </ul>
+        </nav>
+
+        <!-- User Profile Section -->
+        <div class="user-profile">
+            <div class="user-info" onclick={toggleUserMenu}>
+                <lightning-avatar src={userAvatar} fallback-icon-name="standard:user" size="small"></lightning-avatar>
+                <span class="user-name">{userName}</span>
+                <lightning-icon icon-name="utility:chevronright" size="x-small" class="user-arrow"></lightning-icon>
+            </div>
+            
+            <!-- User Dropdown Menu -->
+            <div class="user-dropdown" class:show={showUserMenu}>
+                <ul class="user-menu-list">
+                    <li class="user-menu-item" onclick={handleUserMenuClick} data-action="profile">
+                        <lightning-icon icon-name="standard:user" size="x-small"></lightning-icon>
+                        <span>My Profile</span>
+                    </li>
+                    <li class="user-menu-item" onclick={handleUserMenuClick} data-action="settings">
+                        <lightning-icon icon-name="utility:settings" size="x-small"></lightning-icon>
+                        <span>Settings</span>
+                    </li>
+                    <li class="user-menu-item" onclick={handleUserMenuClick} data-action="logout">
+                        <lightning-icon icon-name="utility:logout" size="x-small"></lightning-icon>
+                        <span>Logout</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</template> 
