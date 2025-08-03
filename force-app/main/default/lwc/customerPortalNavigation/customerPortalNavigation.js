@@ -1,12 +1,13 @@
-import { LightningElement, track, wire } from 'lwc';
+import { LightningElement, track, wire, api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 export default class CustomerPortalNavigation extends NavigationMixin(LightningElement) {
+    @api userName = 'John Doe';
+    @api userAvatar = '';
+    
     @track showMobileMenu = false;
     @track showUserMenu = false;
     @track menuItems = [];
-    @track userName = 'John Doe';
-    @track userAvatar = '';
 
     connectedCallback() {
         this.initializeMenuItems();
@@ -146,10 +147,9 @@ export default class CustomerPortalNavigation extends NavigationMixin(LightningE
                 item.isActive = item.id === menuId;
             });
 
-            // Toggle submenu if it has one
-            if (menuItem.hasSubmenu) {
-                menuItem.showSubmenu = !menuItem.showSubmenu;
-            } else {
+            // For desktop, don't toggle submenu on click - let CSS handle hover
+            // For mobile, we'll handle submenu toggling in mobile handler
+            if (!menuItem.hasSubmenu) {
                 // Navigate to the page
                 this.navigateToPage(menuItem.url);
             }

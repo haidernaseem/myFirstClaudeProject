@@ -105,6 +105,20 @@
     transform: rotate(90deg);
 }
 
+/* Show submenu on hover */
+.nav-item:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Keep submenu visible when hovering over the submenu itself */
+.submenu:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
 /* Submenu Styles */
 .submenu {
     position: absolute;
@@ -117,7 +131,7 @@
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     z-index: 1001;
     margin-top: 0.5rem;
 }
