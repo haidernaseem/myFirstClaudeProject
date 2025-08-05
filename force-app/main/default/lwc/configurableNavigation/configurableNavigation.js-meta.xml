@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Configurable Navigation</masterLabel>
+    <description>A configurable navigation component that mimics the Aussie Elevate design</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__FlowScreen</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage">
+            <property name="logoIcon" type="String" default="utility:home" description="Icon for the logo (Salesforce Lightning Design System icon name)"/>
+            <property name="logoText" type="String" default="Aussie" description="Main logo text"/>
+            <property name="logoSubText" type="String" default="Elevate" description="Secondary logo text"/>
+            <property name="primaryColor" type="String" default="#4A4A8C" description="Primary color for the navigation (hex color)"/>
+            <property name="secondaryColor" type="String" default="#FFD700" description="Secondary color for the navigation (hex color)"/>
+            <property name="textColor" type="String" default="#4A4A8C" description="Text color for the navigation (hex color)"/>
+            <property name="userName" type="String" default="User170486240..." description="Display name for the user"/>
+            <property name="userAvatar" type="String" default="" description="URL for user avatar image"/>
+            <property name="showNotifications" type="Boolean" default="false" description="Show notifications icon"/>
+            <property name="menuItems" type="String" default="" description="JSON string of menu items configuration"/>
+            <property name="userMenuItems" type="String" default="" description="JSON string of user menu items configuration"/>
+        </targetConfig>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="logoIcon" type="String" default="utility:home" description="Icon for the logo (Salesforce Lightning Design System icon name)"/>
+            <property name="logoText" type="String" default="Aussie" description="Main logo text"/>
+            <property name="logoSubText" type="String" default="Elevate" description="Secondary logo text"/>
+            <property name="primaryColor" type="String" default="#4A4A8C" description="Primary color for the navigation (hex color)"/>
+            <property name="secondaryColor" type="String" default="#FFD700" description="Secondary color for the navigation (hex color)"/>
+            <property name="textColor" type="String" default="#4A4A8C" description="Text color for the navigation (hex color)"/>
+            <property name="userName" type="String" default="User170486240..." description="Display name for the user"/>
+            <property name="userAvatar" type="String" default="" description="URL for user avatar image"/>
+            <property name="showNotifications" type="Boolean" default="false" description="Show notifications icon"/>
+            <property name="menuItems" type="String" default="" description="JSON string of menu items configuration"/>
+            <property name="userMenuItems" type="String" default="" description="JSON string of user menu items configuration"/>
+        </targetConfig>
+
+    </targetConfigs>
+</LightningComponentBundle> 

@@ -1,0 +1,130 @@
+/* Demo Container Styles */
+.demo-container {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.demo-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.demo-header h1 {
+    color: #4A4A8C;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.demo-header p {
+    color: #666;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.demo-controls {
+    margin-bottom: 2rem;
+}
+
+.control-group {
+    padding: 1rem;
+}
+
+.control-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.demo-navigation {
+    margin-bottom: 2rem;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.demo-content {
+    margin-bottom: 2rem;
+}
+
+.content-area {
+    padding: 1rem;
+}
+
+.content-area p {
+    margin-bottom: 1rem;
+    color: #333;
+    line-height: 1.6;
+}
+
+.feature-list {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #4A4A8C;
+}
+
+.feature-list h3 {
+    color: #4A4A8C;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.feature-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    padding: 0.5rem 0;
+    color: #333;
+    font-weight: 500;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.feature-list li:last-child {
+    border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .demo-container {
+        padding: 0.5rem;
+    }
+    
+    .demo-header {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .demo-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .demo-header p {
+        font-size: 1rem;
+    }
+    
+    .feature-list {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .demo-header h1 {
+        font-size: 1.25rem;
+    }
+    
+    .demo-header p {
+        font-size: 0.9rem;
+    }
+} 

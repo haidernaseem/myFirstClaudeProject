@@ -1,0 +1,111 @@
+<template>
+    <div class="configurable-nav" style={navStyles}>
+        <!-- Left Section: Logo/Brand -->
+        <div class="nav-brand">
+            <div class="logo-container">
+                <lightning-icon 
+                    icon-name={logoIcon} 
+                    size="medium" 
+                    class="logo-icon">
+                </lightning-icon>
+                <div class="brand-text">
+                    <span class="brand-main">{logoText}</span>
+                    <div class="brand-separator"></div>
+                    <span class="brand-sub">{logoSubText}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Section: Navigation Menu -->
+        <nav class="nav-menu">
+            <ul class="nav-list">
+                <template for:each={menuItemsWithState} for:item="item">
+                    <li key={item.id} class="nav-item" data-id={item.id} onclick={handleMenuClick}>
+                        <div class="nav-link" class:active={item.isActive}>
+                            <span class="nav-text">{item.label}</span>
+                            <lightning-icon 
+                                if:true={item.hasSubmenu} 
+                                icon-name="utility:chevrondown" 
+                                size="x-small" 
+                                class="submenu-arrow">
+                            </lightning-icon>
+                        </div>
+                        
+                        <!-- Submenu -->
+                        <ul if:true={item.hasSubmenu} class="submenu" class:show={item.showSubmenu}>
+                            <template for:each={item.submenuItems} for:item="subItem">
+                                <li key={subItem.id} class="submenu-item">
+                                    <div class="submenu-link" 
+                                         data-id={subItem.id} 
+                                         data-parent={item.id} 
+                                         onclick={handleSubmenuClick}>
+                                        <span class="submenu-text">{subItem.label}</span>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </li>
+                </template>
+            </ul>
+        </nav>
+
+        <!-- Right Section: Notifications and User Profile -->
+        <div class="nav-right">
+            <!-- Notifications -->
+            <div if:true={showNotifications} class="notifications-container">
+                <div class="notifications-icon" onclick={toggleNotificationsMenu}>
+                    <lightning-icon 
+                        icon-name="utility:notification" 
+                        size="small" 
+                        class="notification-icon">
+                    </lightning-icon>
+                </div>
+                
+                <!-- Notifications Dropdown -->
+                <div class="notifications-dropdown" class:show={showNotificationsMenu}>
+                    <div class="notifications-header">
+                        <span>Notifications</span>
+                    </div>
+                    <div class="notifications-content">
+                        <div class="notification-item">
+                            <span>No new notifications</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="user-profile">
+                <div class="user-info" onclick={toggleUserMenu}>
+                    <lightning-avatar 
+                        src={userAvatar} 
+                        fallback-icon-name="standard:user" 
+                        size="small" 
+                        class="user-avatar">
+                    </lightning-avatar>
+                    <span class="user-name">{userName}</span>
+                </div>
+                
+                <!-- User Dropdown Menu -->
+                <div class="user-dropdown" class:show={showUserMenu}>
+                    <ul class="user-menu-list">
+                        <template for:each={userMenuItems} for:item="menuItem">
+                            <li key={menuItem.id} class="user-menu-item">
+                                <div class="user-menu-link" 
+                                     data-id={menuItem.id} 
+                                     onclick={handleUserMenuClick}>
+                                    <lightning-icon 
+                                        icon-name={menuItem.icon} 
+                                        size="x-small" 
+                                        class="user-menu-icon">
+                                    </lightning-icon>
+                                    <span class="user-menu-text">{menuItem.label}</span>
+                                </div>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</template> 

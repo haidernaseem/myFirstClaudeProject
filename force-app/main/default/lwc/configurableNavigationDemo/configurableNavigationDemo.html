@@ -1,0 +1,60 @@
+<template>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>Configurable Navigation Demo</h1>
+            <p>This demo showcases the configurable navigation component with different configurations.</p>
+        </div>
+
+        <div class="demo-controls">
+            <lightning-card title="Configuration Options">
+                <div class="control-group">
+                    <label for="config-select">Select Configuration:</label>
+                    <lightning-combobox
+                        id="config-select"
+                        name="config"
+                        value={currentConfig}
+                        options={configOptions}
+                        onchange={handleConfigChange}>
+                    </lightning-combobox>
+                </div>
+            </lightning-card>
+        </div>
+
+        <div class="demo-navigation">
+            <c-configurable-navigation
+                logo-icon="utility:home"
+                logo-text="Aussie"
+                logo-sub-text="Elevate"
+                primary-color="#4A4A8C"
+                secondary-color="#FFD700"
+                text-color="#4A4A8C"
+                user-name="User170486240..."
+                show-notifications="true"
+                menu-items={currentMenuItems}
+                user-menu-items={currentUserMenuItems}>
+            </c-configurable-navigation>
+        </div>
+
+        <div class="demo-content">
+            <lightning-card title="Demo Content">
+                <div class="content-area">
+                    <p>This is demo content to show how the navigation looks in context.</p>
+                    <p>The navigation component above is fully configurable and matches the design requirements.</p>
+                    
+                    <div class="feature-list">
+                        <h3>Features Demonstrated:</h3>
+                        <ul>
+                            <li>✅ Configurable logo and branding</li>
+                            <li>✅ Dynamic menu items with submenus</li>
+                            <li>✅ Customizable colors and theming</li>
+                            <li>✅ User profile dropdown with settings</li>
+                            <li>✅ Notifications icon and dropdown</li>
+                            <li>✅ Responsive design</li>
+                            <li>✅ Accessibility features</li>
+                        </ul>
+                    </div>
+                </div>
+            </lightning-card>
+        </div>
+    </div>
+</template> 

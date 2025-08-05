@@ -1,0 +1,471 @@
+/* Configurable Navigation Styles */
+.configurable-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    padding: 0 1.5rem;
+    height: 70px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1000;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+/* CSS Variables for dynamic theming */
+.configurable-nav {
+    --primary-color: #4A4A8C;
+    --secondary-color: #FFD700;
+    --text-color: #4A4A8C;
+}
+
+/* Left Section: Logo/Brand */
+.nav-brand {
+    display: flex;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-icon {
+    --sds-c-icon-color-foreground-default: var(--secondary-color);
+}
+
+.brand-text {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.brand-main {
+    color: var(--text-color);
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.brand-separator {
+    width: 1px;
+    height: 20px;
+    background-color: #ccc;
+    margin: 0 0.5rem;
+}
+
+.brand-sub {
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Center Section: Navigation Menu */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+}
+
+.nav-item {
+    position: relative;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-link:hover {
+    background-color: rgba(74, 74, 140, 0.1);
+    color: var(--primary-color);
+}
+
+.nav-link.active {
+    background-color: rgba(74, 74, 140, 0.15);
+    color: var(--primary-color);
+}
+
+.nav-text {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-size: 0.95rem;
+}
+
+.submenu-arrow {
+    --sds-c-icon-color-foreground-default: var(--text-color);
+    transition: transform 0.2s;
+}
+
+.nav-item:hover .submenu-arrow {
+    transform: rotate(180deg);
+}
+
+/* Show submenu on hover (fallback) */
+.nav-item:hover .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Keep submenu visible when hovering over the submenu itself */
+.submenu:hover {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Show submenu when showSubmenu is true */
+.submenu.show {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: translateY(0) !important;
+}
+
+/* Submenu Styles */
+.submenu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 1001;
+    margin-top: 0.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.submenu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.submenu-item {
+    list-style: none;
+}
+
+.submenu-link {
+    display: flex;
+    align-items: center;
+    padding: 0.875rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    transition: background-color 0.2s;
+    border-radius: 0;
+    cursor: pointer;
+}
+
+.submenu-link:hover {
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.submenu-link:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.submenu-link:last-child {
+    border-radius: 0 0 8px 8px;
+}
+
+.submenu-text {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Right Section: Notifications and User Profile */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Notifications */
+.notifications-container {
+    position: relative;
+}
+
+.notifications-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.notifications-icon:hover {
+    background-color: rgba(74, 74, 140, 0.1);
+}
+
+.notification-icon {
+    --sds-c-icon-color-foreground-default: var(--text-color);
+}
+
+/* Notifications Dropdown */
+.notifications-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 250px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    margin-top: 0.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.notifications-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.notifications-header {
+    padding: 1rem;
+    border-bottom: 1px solid #e9ecef;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.notifications-content {
+    padding: 1rem;
+}
+
+.notification-item {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* User Profile */
+.user-profile {
+    position: relative;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.user-info:hover {
+    background-color: rgba(74, 74, 140, 0.1);
+}
+
+.user-avatar {
+    --sds-c-avatar-color-background: var(--primary-color);
+    --sds-c-avatar-text-color: white;
+}
+
+.user-name {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* User Dropdown Menu */
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1001;
+    margin-top: 0.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.user-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.user-menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 0;
+}
+
+.user-menu-item {
+    list-style: none;
+}
+
+.user-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.user-menu-link:hover {
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.user-menu-link:first-child {
+    border-radius: 8px 8px 0 0;
+}
+
+.user-menu-link:last-child {
+    border-radius: 0 0 8px 8px;
+}
+
+.user-menu-icon {
+    --sds-c-icon-color-foreground-default: #666;
+}
+
+.user-menu-text {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .nav-list {
+        gap: 1rem;
+    }
+    
+    .nav-text {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .configurable-nav {
+        padding: 0 1rem;
+    }
+    
+    .nav-menu {
+        display: none;
+    }
+    
+    .nav-brand {
+        flex: 1;
+    }
+    
+    .brand-main,
+    .brand-sub {
+        font-size: 1rem;
+    }
+    
+    .user-name {
+        display: none;
+    }
+    
+    .user-info {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .configurable-nav {
+        padding: 0 0.75rem;
+    }
+    
+    .brand-main,
+    .brand-sub {
+        font-size: 0.9rem;
+    }
+    
+    .notifications-container {
+        display: none;
+    }
+}
+
+/* Focus states for accessibility */
+.nav-link:focus,
+.submenu-link:focus,
+.user-menu-link:focus,
+.notifications-icon:focus,
+.user-info:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Animation for menu items */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.nav-item {
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+.nav-item:nth-child(1) { animation-delay: 0.1s; }
+.nav-item:nth-child(2) { animation-delay: 0.2s; }
+.nav-item:nth-child(3) { animation-delay: 0.3s; }
+.nav-item:nth-child(4) { animation-delay: 0.4s; }
+.nav-item:nth-child(5) { animation-delay: 0.5s; }
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .nav-link {
+        border: 1px solid transparent;
+    }
+    
+    .nav-link:hover,
+    .nav-link.active {
+        border-color: var(--primary-color);
+    }
+    
+    .submenu,
+    .user-dropdown,
+    .notifications-dropdown {
+        border: 2px solid var(--primary-color);
+    }
+} 
