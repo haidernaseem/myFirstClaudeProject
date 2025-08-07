@@ -1,0 +1,79 @@
+<template>
+    <div class="configurable-data-table" style={headerStyles}>
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-left">
+                <div class="logo-section">
+                    <template if:true={logoImage}>
+                        <img src={logoImage} alt="Logo" class="logo-image" />
+                    </template>
+                    <template if:false={logoImage}>
+                        <lightning-icon icon-name={logoIcon} size="medium" class="logo-icon"></lightning-icon>
+                    </template>
+                    <div class="logo-text">
+                        <template if:true={logoText}>
+                            <div class="logo-main-text">{logoText}</div>
+                        </template>
+                        <template if:true={logoSubText}>
+                            <div class="logo-sub-text">{logoSubText}</div>
+                        </template>
+                    </div>
+                </div>
+                <div class="title-section">
+                    <h1 class="main-title">{title}</h1>
+                    <template if:true={subtitle}>
+                        <h2 class="sub-title">{subtitle}</h2>
+                    </template>
+                    <template if:true={description}>
+                        <p class="description">{description}</p>
+                    </template>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <lightning-button-group>
+                    <lightning-button 
+                        icon-name="utility:filter" 
+                        variant="neutral" 
+                        onclick={toggleFilterPanel}
+                        class={filterButtonClass}>
+                    </lightning-button>
+                    <lightning-button 
+                        icon-name="utility:refresh" 
+                        variant="neutral" 
+                        onclick={handleRefresh}
+                        disabled={isLoading}>
+                    </lightning-button>
+                    <lightning-button 
+                        label="Export" 
+                        variant="brand" 
+                        onclick={handleExport}
+                        disabled={isLoading}>
+                    </lightning-button>
+                </lightning-button-group>
+            </div>
+        </div>
+
+        <!-- Total Records -->
+        <div class="total-records">
+            Total Records: {totalRecords}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Data Table -->
+        <div class="data-table-section">
+            <lightning-datatable
+                            data={filteredData}
+                            columns={columns}
+                            key-field="Id"
+                            onsort={handleSort}
+                            sorted-by={sortBy}
+                            sorted-direction={sortDirection}
+                            hide-checkbox-column="true"
+                            show-row-number-column="true">
+                        </lightning-datatable>
+        </div>
+    </div>
+</template>

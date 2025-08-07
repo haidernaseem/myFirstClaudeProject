@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>58.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Configurable Data Table</masterLabel>
+    <description>A highly configurable data table component with filtering and export functionality for LWR sites</description>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+        <target>lightning__FlowScreen</target>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <!-- Header Configuration -->
+            <property name="title" type="String" default="Report: Financial Accounts" description="Main title of the report"/>
+            <property name="subtitle" type="String" default="My Portfolio" description="Subtitle of the report"/>
+            <property name="description" type="String" default="This report will be used on wealth portal to show financial accounts with future maturity date." description="Description of the report"/>
+            <property name="logoIcon" type="String" default="utility:chart" description="Icon for the logo (Salesforce Lightning Design System icon name)"/>
+            <property name="logoText" type="String" default="Logo Text" description="Main logo text"/>
+            <property name="logoSubText" type="String" default="Logo Sub Text" description="Secondary logo text"/>
+            <property name="logoImage" type="String" default="" description="Static resource URL for logo image (overrides logoIcon if provided)"/>
+            <property name="primaryColor" type="String" default="#4A4A8C" description="Primary color for the header (hex color)"/>
+            <property name="secondaryColor" type="String" default="#FFD700" description="Secondary color for the header (hex color)"/>
+            
+            <!-- Data Configuration -->
+            <property name="objectName" type="String" default="Account" description="API name of the object to query"/>
+            <!--<property name="columns" type="String" default="" description="JSON string of column configuration"/>-->
+            <property name="whereClause" type="String" default="" description="WHERE clause for the SOQL query"/>
+            <property name="orderBy" type="String" default="Name" description="ORDER BY clause for the SOQL query"/>
+            <property name="limit" type="Integer" default="100" description="Maximum number of records to retrieve"/>
+            
+            <!-- Filter Configuration -->
+            <property name="dateField" type="String" default="CreatedDate" description="Date field to use for date filtering"/>
+            <property name="showDateFilter" type="Boolean"  description="Show date filter options"/>
+            <property name="showCustomFilters" type="Boolean"  description="Show custom filter options"/>
+        </targetConfig>
+        <targetConfig targets="lightning__FlowScreen">
+            <!-- Header Configuration -->
+            <property name="title" type="String" default="Report: Financial Accounts" description="Main title of the report"/>
+            <property name="subtitle" type="String" default="My Portfolio" description="Subtitle of the report"/>
+            <property name="description" type="String" default="This report will be used on wealth portal to show financial accounts with future maturity date." description="Description of the report"/>
+            <property name="logoIcon" type="String" default="utility:chart" description="Icon for the logo (Salesforce Lightning Design System icon name)"/>
+            <property name="logoText" type="String" default="" description="Main logo text"/>
+            <property name="logoSubText" type="String" default="" description="Secondary logo text"/>
+            <property name="logoImage" type="String" default="" description="Static resource URL for logo image (overrides logoIcon if provided)"/>
+            <property name="primaryColor" type="String" default="#4A4A8C" description="Primary color for the header (hex color)"/>
+            <property name="secondaryColor" type="String" default="#FFD700" description="Secondary color for the header (hex color)"/>
+            
+            <!-- Data Configuration -->
+            <property name="objectName" type="String" default="Account" description="API name of the object to query"/>
+            <!--<property name="columns" type="String" default="" description="JSON string of column configuration"/>-->
+            <property name="whereClause" type="String" default="" description="WHERE clause for the SOQL query"/>
+            <property name="orderBy" type="String" default="Name" description="ORDER BY clause for the SOQL query"/>
+            <property name="limit" type="Integer" default="100" description="Maximum number of records to retrieve"/>
+            
+            <!-- Filter Configuration -->
+            <property name="dateField" type="String" default="CreatedDate" description="Date field to use for date filtering"/>
+            <property name="showDateFilter" type="Boolean"  description="Show date filter options"/>
+            <property name="showCustomFilters" type="Boolean"  description="Show custom filter options"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>
