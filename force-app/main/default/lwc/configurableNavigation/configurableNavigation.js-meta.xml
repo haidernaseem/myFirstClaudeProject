@@ -17,9 +17,11 @@
             <property name="logoIcon" type="String" default="utility:home" description="Icon for the logo (Salesforce Lightning Design System icon name)"/>
             <property name="logoText" type="String" default="Aussie" description="Main logo text"/>
             <property name="logoSubText" type="String" default="Elevate" description="Secondary logo text"/>
+            <property name="logoImage" type="String" default="" description="Static resource URL for logo image (overrides logoIcon if provided)"/>
             <property name="primaryColor" type="String" default="#4A4A8C" description="Primary color for the navigation (hex color)"/>
             <property name="secondaryColor" type="String" default="#FFD700" description="Secondary color for the navigation (hex color)"/>
             <property name="textColor" type="String" default="#4A4A8C" description="Text color for the navigation (hex color)"/>
+            <property name="backgroundGradient" type="String" default="linear-gradient(135deg, #4A4A8C 0%, #6B6BA8 100%)" description="Background gradient for the navigation (CSS gradient)"/>
             <property name="userName" type="String" default="User170486240..." description="Display name for the user"/>
             <property name="userAvatar" type="String" default="" description="URL for user avatar image"/>
             <property name="showNotifications" type="Boolean" default="false" description="Show notifications icon"/>
@@ -30,9 +32,11 @@
             <property name="logoIcon" type="String" default="utility:home" description="Icon for the logo (Salesforce Lightning Design System icon name)"/>
             <property name="logoText" type="String" default="Aussie" description="Main logo text"/>
             <property name="logoSubText" type="String" default="Elevate" description="Secondary logo text"/>
+            <property name="logoImage" type="String" default="" description="Static resource URL for logo image (overrides logoIcon if provided)"/>
             <property name="primaryColor" type="String" default="#4A4A8C" description="Primary color for the navigation (hex color)"/>
             <property name="secondaryColor" type="String" default="#FFD700" description="Secondary color for the navigation (hex color)"/>
             <property name="textColor" type="String" default="#4A4A8C" description="Text color for the navigation (hex color)"/>
+            <property name="backgroundGradient" type="String" default="linear-gradient(135deg, #4A4A8C 0%, #6B6BA8 100%)" description="Background gradient for the navigation (CSS gradient)"/>
             <property name="userName" type="String" default="User170486240..." description="Display name for the user"/>
             <property name="userAvatar" type="String" default="" description="URL for user avatar image"/>
             <property name="showNotifications" type="Boolean" default="false" description="Show notifications icon"/>

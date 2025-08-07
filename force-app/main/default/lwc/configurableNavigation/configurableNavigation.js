@@ -5,14 +5,15 @@ export default class ConfigurableNavigation extends NavigationMixin(LightningEle
     @api logoIcon = 'utility:home';
     @api logoText = 'Aussie';
     @api logoSubText = 'Elevate';
+    @api logoImage = '';
     @api primaryColor = '#4A4A8C';
     @api secondaryColor = '#FFD700';
     @api textColor = '#4A4A8C';
+    @api backgroundGradient = 'linear-gradient(135deg, #4A4A8C 0%, #6B6BA8 100%)';
     @api userName = 'User170486240...';
     @api userAvatar = '';
     @api showNotifications = false;
     
-    @track showUserMenu = false;
     @track showNotificationsMenu = false;
     @track activeMenuItem = 'home';
     
@@ -107,13 +108,7 @@ export default class ConfigurableNavigation extends NavigationMixin(LightningEle
         }
     }
 
-    // Toggle user menu
-    toggleUserMenu() {
-        this.showUserMenu = !this.showUserMenu;
-        if (this.showUserMenu) {
-            this.showNotificationsMenu = false;
-        }
-    }
+
 
     // Toggle notifications menu
     toggleNotificationsMenu() {
@@ -172,8 +167,6 @@ export default class ConfigurableNavigation extends NavigationMixin(LightningEle
                 this.navigateToPage(menuItem.url);
             }
         }
-        
-        this.showUserMenu = false;
     }
 
     // Navigate to a page
@@ -202,7 +195,6 @@ export default class ConfigurableNavigation extends NavigationMixin(LightningEle
         document.addEventListener('click', (event) => {
             const navElement = this.template.querySelector('.configurable-nav');
             if (navElement && !navElement.contains(event.target)) {
-                this.showUserMenu = false;
                 this.showNotificationsMenu = false;
                 // Close all submenus
                 this.menuItems.forEach(item => {
@@ -218,6 +210,7 @@ export default class ConfigurableNavigation extends NavigationMixin(LightningEle
             --primary-color: ${this.primaryColor};
             --secondary-color: ${this.secondaryColor};
             --text-color: ${this.textColor};
+            --background-gradient: ${this.backgroundGradient};
         `;
     }
 
@@ -228,5 +221,10 @@ export default class ConfigurableNavigation extends NavigationMixin(LightningEle
             isActive: this.activeMenuItem === item.id,
             showSubmenu: item.showSubmenu || false
         }));
+    }
+    
+    // Get user menu items with state
+    get userMenuItemsWithState() {
+        return this.userMenuItems || [];
     }
 } 

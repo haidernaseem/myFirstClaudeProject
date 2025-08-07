@@ -3,11 +3,16 @@
         <!-- Left Section: Logo/Brand -->
         <div class="nav-brand">
             <div class="logo-container">
-                <lightning-icon 
-                    icon-name={logoIcon} 
-                    size="medium" 
-                    class="logo-icon">
-                </lightning-icon>
+                <template if:true={logoImage}>
+                    <img src={logoImage} alt="Logo" class="logo-image" />
+                </template>
+                <template if:false={logoImage}>
+                    <lightning-icon 
+                        icon-name={logoIcon} 
+                        size="medium" 
+                        class="logo-icon">
+                    </lightning-icon>
+                </template>
                 <div class="brand-text">
                     <span class="brand-main">{logoText}</span>
                     <div class="brand-separator"></div>
@@ -76,7 +81,7 @@
 
             <!-- User Profile -->
             <div class="user-profile">
-                <div class="user-info" onclick={toggleUserMenu}>
+                <div class="user-info">
                     <lightning-avatar 
                         src={userAvatar} 
                         fallback-icon-name="standard:user" 
@@ -87,24 +92,22 @@
                 </div>
                 
                 <!-- User Dropdown Menu -->
-                <div class="user-dropdown" class:show={showUserMenu}>
-                    <ul class="user-menu-list">
-                        <template for:each={userMenuItems} for:item="menuItem">
-                            <li key={menuItem.id} class="user-menu-item">
-                                <div class="user-menu-link" 
-                                     data-id={menuItem.id} 
-                                     onclick={handleUserMenuClick}>
-                                    <lightning-icon 
-                                        icon-name={menuItem.icon} 
-                                        size="x-small" 
-                                        class="user-menu-icon">
-                                    </lightning-icon>
-                                    <span class="user-menu-text">{menuItem.label}</span>
-                                </div>
-                            </li>
-                        </template>
-                    </ul>
-                </div>
+                <ul class="user-submenu">
+                    <template for:each={userMenuItemsWithState} for:item="menuItem">
+                        <li key={menuItem.id} class="user-submenu-item">
+                            <div class="user-submenu-link" 
+                                 data-id={menuItem.id} 
+                                 onclick={handleUserMenuClick}>
+                                <lightning-icon 
+                                    icon-name={menuItem.icon} 
+                                    size="x-small" 
+                                    class="user-menu-icon">
+                                </lightning-icon>
+                                <span class="user-submenu-text">{menuItem.label}</span>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
             </div>
         </div>
     </div>
