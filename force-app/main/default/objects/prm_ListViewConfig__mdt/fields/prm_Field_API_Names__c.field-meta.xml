@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>prm_Field_API_Names__c</fullName>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Enter fileds API name seperated by comma</inlineHelpText>
+    <label>Field API Names</label>
+    <length>32768</length>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

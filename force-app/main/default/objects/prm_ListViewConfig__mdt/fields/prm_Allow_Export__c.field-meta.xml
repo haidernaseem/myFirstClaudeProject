@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>prm_Allow_Export__c</fullName>
+    <defaultValue>false</defaultValue>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Where export button needed or not?</inlineHelpText>
+    <label>Allow Export</label>
+    <type>Checkbox</type>
+</CustomField>

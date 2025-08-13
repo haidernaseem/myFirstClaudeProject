@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Will be used by generic LWC to display listview with export button on LWR sites</description>
+    <label>prm_ListViewConfig</label>
+    <pluralLabel>prm_ListViewConfigs</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

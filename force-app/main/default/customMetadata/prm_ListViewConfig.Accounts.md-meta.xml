@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Accounts</label>
+    <protected>false</protected>
+    <values>
+        <field>prm_Allow_Export__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>prm_Field_API_Names__c</field>
+        <value xsi:type="xsd:string">Id,Name,CreatedBy.Name</value>
+    </values>
+    <values>
+        <field>prm_Icon_Name__c</field>
+        <value xsi:type="xsd:string">standard:account</value>
+    </values>
+    <values>
+        <field>prm_Object_API_Name__c</field>
+        <value xsi:type="xsd:string">Account</value>
+    </values>
+    <values>
+        <field>prm_Title__c</field>
+        <value xsi:type="xsd:string">My Accounts</value>
+    </values>
+    <values>
+        <field>prm_Where_Clause__c</field>
+        <value xsi:nil="true"/>
+    </values>
+</CustomMetadata>

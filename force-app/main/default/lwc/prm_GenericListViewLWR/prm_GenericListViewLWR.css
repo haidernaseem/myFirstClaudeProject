@@ -1,0 +1,5 @@
+/* force-app/main/default/lwc/prm_GenericListViewLWR/prm_GenericListViewLWR.css */
+.scroll-container {
+	max-height: 400px;
+	overflow-y: auto;
+}
