@@ -3,146 +3,242 @@ import getListViewDataPageable from '@salesforce/apex/prm_GenericListViewControl
 import { NavigationMixin } from 'lightning/navigation';
 
 export default class Prm_GenericListViewLWR extends NavigationMixin(LightningElement) {
-    @api configName;
-    @track records = [];
-    @track fields = [];
-    @track fieldLabels = {};
-    @track objectName;
-    @track title;
-    @track iconName;
-    @track allowExport = false;
-    @track error;
-    @track headerColumns = [];
+	@api configName;
+	@track records = [];
+	@track fields = [];
+	@track fieldLabels = {};
+	@track objectName;
+	@track title;
+	@track iconName;
+	@track allowExport = false;
+	@track error;
+	@track headerColumns = [];
 
-    pageSize = 20;
-    offset = 0;
-    isLoading = false;
-    hasMore = true;
-    initialized = false;
+	pageSize = 20;
+	offset = 0;
+	isLoading = false;
+	hasMore = true;
+	initialized = false;
 
-    get hasData() {
-        return this.records && this.records.length > 0;
-    }
+    sortBy = 'Name';
+	sortDirection = 'ASC';
+	nameHeaderClass = 'slds-is-sortable slds-text-title_caps';
+	isSortedByName = true;
+	sortableFields = new Set();
+	isNameSortable = true;
+    isExporting = false;
 
-    connectedCallback() {
-        this.loadInitial();
-    }
+	get sortIconName() {
+		return this.sortDirection === 'ASC' ? 'utility:arrowup' : 'utility:arrowdown';
+	}
+    
+    get exportLabel() {
+		return this.isExporting ? 'Exporting...' : 'Export';
+	}
+	get hasData() {
+		return this.records && this.records.length > 0;
+	}
 
-    loadInitial() {
-        this.records = [];
-        this.fields = [];
-        this.headerColumns = [];
-        this.fieldLabels = {};
-        this.offset = 0;
-        this.hasMore = true;
-        this.error = undefined;
-        this.initialized = false;
-        this.fetchPage();
-    }
+	connectedCallback() {
+		this.loadInitial();
+	}
 
-    async fetchPage() {
-        if (this.isLoading || !this.hasMore) {
-            return;
-        }
-        this.isLoading = true;
-        try {
-            const data = await getListViewDataPageable({
-                configName: this.configName,
-                limitSize: this.pageSize,
-                offsetSize: this.offset
-            });
+	loadInitial() {
+		this.records = [];
+		this.fields = [];
+		this.headerColumns = [];
+		this.fieldLabels = {};
+		this.offset = 0;
+		this.hasMore = true;
+		this.error = undefined;
+		this.initialized = false;
+		this.fetchPage();
+	}
 
-            this.error = undefined;
+	async fetchPage() {
+		if (this.isLoading || !this.hasMore) {
+			return;
+		}
+		this.isLoading = true;
+		try {
+			const data = await getListViewDataPageable({
+				configName: this.configName,
+				limitSize: this.pageSize,
+				offsetSize: this.offset,
+				sortField: this.sortBy,
+				sortDirection: this.sortDirection
+			});
 
-            // Static meta
-            this.objectName = data.objectName;
-            this.allowExport = !!data.allowExport;
-            this.title = data.title || '';
-            this.iconName = data.iconName || 'standard:record';
-            this.fieldLabels = data.fieldLabels || this.fieldLabels;
+			this.error = undefined;
 
-            // Fields and headers (first page only or when not yet initialized)
-            if (!this.initialized) {
-                // Remove Name/Id from display fields but keep them for internal usage
-                this.fields = (data.fields || [])
-                    .map(f => f.trim())
-                    .filter(f => f !== 'Name' && f !== 'Id');
-                this.headerColumns = this.fields.map(f => {
-                    return {
-                        apiName: f,
-                        label: this.fieldLabels && this.fieldLabels[f] ? this.fieldLabels[f] : f
-                    };
-                });
-                this.initialized = true;
-            }
+			this.objectName = data.objectName;
+			this.allowExport = !!data.allowExport;
+			this.title = data.title || '';
+			this.iconName = data.iconName || 'standard:record';
+			this.fieldLabels = data.fieldLabels || this.fieldLabels;
+			// Debug applied sort from server
+			// Remove after verification
+			// eslint-disable-next-line no-console
+			console.log('Applied sort =>', data.appliedSortField, data.appliedSortDirection);
 
-            // Records mapping
-            const newRecords = (data.records || []).map(rec => {
-                const nameValue = this.getValueByPath(rec, 'Name') || '';
-                const cells = this.fields.map(fieldApi => ({
-                    field: fieldApi,
-                    value: this.getValueByPath(rec, fieldApi)
-                }));
-                return { Id: rec.Id, Name: nameValue, cells };
-            });
+			// track allowed sortable fields from server
+			if (data.sortableFields && Array.isArray(data.sortableFields)) {
+				this.sortableFields = new Set(data.sortableFields.map(s => (s || '').trim()).filter(s => s));
+			} else {
+				this.sortableFields = new Set(['Name']);
+			}
 
-            this.records = [...this.records, ...newRecords];
-            this.offset += newRecords.length;
-            this.hasMore = !!data.hasMore;
-        } catch (e) {
-            this.error = e && e.body && e.body.message ? e.body.message : (e && e.message ? e.message : 'Unknown error');
-            this.hasMore = false;
-        } finally {
-            this.isLoading = false;
-        }
-    }
+			if (!this.initialized) {
+				this.fields = (data.fields || [])
+					.map(f => f.trim())
+					.filter(f => f !== 'Name' && f !== 'Id');
+				this.buildHeaderColumns();
+				this.initialized = true;
+			}
 
-    getValueByPath(obj, path) {
-        if (!obj || !path) return '';
-        return path.split('.').reduce((acc, part) => acc && acc[part], obj) || '';
-    }
+			const newRecords = (data.records || []).map(rec => {
+				const nameValue = this.getValueByPath(rec, 'Name') || '';
+				const cells = this.fields.map(fieldApi => ({
+					field: fieldApi,
+					value: this.getValueByPath(rec, fieldApi)
+				}));
+				return { Id: rec.Id, Name: nameValue, cells };
+			});
 
-    navigateToRecord(event) {
-        const recordId = event.currentTarget.dataset.id;
-        this[NavigationMixin.Navigate]({
-            type: 'standard__recordPage',
-            attributes: { recordId, objectApiName: this.objectName, actionName: 'view' }
-        });
-    }
+			this.records = [...this.records, ...newRecords];
+			this.offset += newRecords.length;
+			this.hasMore = !!data.hasMore;
 
-    handleScroll(event) {
-        console.log('Scroll');
-        const el = event.target;
-        const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 50;
-        if (nearBottom && !this.isLoading && this.hasMore) {
-            this.fetchPage();
-        }
-    }
+			// eslint-disable-next-line no-console
+			console.log('First rows:', this.records.slice(0, 5).map(r => r.Name));
+		} catch (e) {
+			this.error = e && e.body && e.body.message ? e.body.message : (e && e.message ? e.message : 'Unknown error');
+			this.hasMore = false;
+		} finally {
+			this.isLoading = false;
+		}
+	}
 
-    handleExport() {
-        if (!this.allowExport || !this.hasData) {
-            return;
-        }
+	isSortableField(fieldApi) {
+		return fieldApi && fieldApi.indexOf('.') === -1 && this.sortableFields.has(fieldApi);
+	}
 
-        // Prepare CSV content
-        let csvContent = this.headerColumns.map(col => col.label).join(',') + '\n';
+	buildHeaderColumns() {
+		this.headerColumns = this.fields.map(f => {
+			const isSorted = this.sortBy === f;
+			const sortable = this.isSortableField(f);
+			const baseCls = sortable ? 'slds-is-sortable slds-text-title_caps' : 'slds-text-title_caps';
+			const cls = baseCls + (isSorted ? (' slds-is-sorted ' + (this.sortDirection === 'ASC' ? 'slds-is-sorted_asc' : 'slds-is-sorted_desc')) : '');
+			return {
+				apiName: f,
+				label: this.fieldLabels && this.fieldLabels[f] ? this.fieldLabels[f] : f,
+				isSorted,
+				headerClass: cls,
+				sortable
+			};
+		});
+        this.isSortedByName = this.sortBy === 'Name';
+		const nameSortable = this.sortableFields.has('Name');
+		this.isNameSortable = nameSortable;
+		this.nameHeaderClass = (nameSortable ? 'slds-is-sortable ' : '') + 'slds-text-title_caps' + (this.isSortedByName ? (' slds-is-sorted ' + (this.sortDirection === 'ASC' ? 'slds-is-sorted_asc' : 'slds-is-sorted_desc')) : '');
+	}
 
-        this.records.forEach(row => {
-            let rowData = this.fields.map(fieldApi => {
-                const cell = row.cells.find(c => c.field === fieldApi);
-                let value = cell ? cell.value : '';
-                return `"${value.toString().replace(/"/g, '""')}"`;
-            });
-            csvContent += rowData.join(',') + '\n';
-        });
+	handleSort(event) {
+		const field = event.currentTarget.dataset.field;
+		if (!field) return;
 
-        const encodedUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+		// Only allow server-side sort for metadata-allowed root fields
+		if (!this.isSortableField(field)) {
+			return;
+		}
 
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', 'export.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+		if (this.sortBy === field) {
+			this.sortDirection = this.sortDirection === 'ASC' ? 'DESC' : 'ASC';
+		} else {
+			this.sortBy = field;
+			this.sortDirection = 'ASC';
+		}
+		this.buildHeaderColumns();
+		this.loadInitial();
+	}
+
+	getValueByPath(obj, path) {
+		if (!obj || !path) return '';
+		return path.split('.').reduce((acc, part) => acc && acc[part], obj) || '';
+	}
+
+	navigateToRecord(event) {
+		const recordId = event.currentTarget.dataset.id;
+		this[NavigationMixin.Navigate]({
+			type: 'standard__recordPage',
+			attributes: { recordId, objectApiName: this.objectName, actionName: 'view' }
+		});
+	}
+
+	handleScroll(event) {
+		const el = event.target;
+		const nearBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 50;
+		if (nearBottom && !this.isLoading && this.hasMore) {
+			this.fetchPage();
+		}
+	}
+
+    get exportHeaderColumns() {
+		return [{ apiName: 'Name', label: this.fieldLabels['Name'] || 'Name' }, ...this.headerColumns];
+	}
+	
+	get exportFieldApis() {
+		return ['Name', ...this.fields];
+	}
+
+	async handleExport() {
+		if (!this.allowExport || this.isExporting) {
+			return;
+		}
+
+		this.isExporting = true;
+		try {
+			// Header
+			const headers = this.exportHeaderColumns.map(h => h.label);
+			let csvContent = headers.join(',') + '\n';
+
+			// Fetch all pages from server in larger chunks
+			let expOffset = 0;
+			const expPageSize = 2000; // faster export, stays within limits
+			let hasMore = true;
+
+			while (hasMore) {
+				// eslint-disable-next-line no-await-in-loop
+				const data = await getListViewDataPageable({
+					configName: this.configName,
+					limitSize: expPageSize,
+					offsetSize: expOffset,
+					sortField: this.sortBy,
+					sortDirection: this.sortDirection
+				});
+
+				const pageRecords = data.records || [];
+				pageRecords.forEach(rec => {
+					const rowData = this.exportFieldApis.map(api => {
+						const value = this.getValueByPath(rec, api) || '';
+						return `"${value.toString().replace(/"/g, '""')}"`;
+					});
+					csvContent += rowData.join(',') + '\n';
+				});
+
+				hasMore = !!data.hasMore;
+				expOffset += pageRecords.length;
+			}
+
+			const encodedUri = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent);
+			const link = document.createElement('a');
+			link.setAttribute('href', encodedUri);
+			link.setAttribute('download', 'export.csv');
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+		} finally {
+			this.isExporting = false;
+		}
+	}
 }
