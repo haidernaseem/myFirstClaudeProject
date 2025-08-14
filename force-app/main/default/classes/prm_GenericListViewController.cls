@@ -43,7 +43,15 @@ public with sharing class prm_GenericListViewController {
     }
 
     @AuraEnabled(cacheable=true)
-    public static Map<String, Object> getListViewDataPageable(String configName, Integer limitSize, Integer offsetSize, String sortField, String sortDirection) {
+    public static Map<String, Object> getListViewDataPageable(
+        String configName,
+        Integer limitSize,
+        Integer offsetSize,
+        String sortField,
+        String sortDirection,
+        String filterDateField,
+        String filterRange
+    ) {
         prm_ListViewConfig__mdt config = [
             SELECT prm_Object_API_Name__c, prm_Field_API_Names__c, prm_Where_Clause__c, 
                    prm_Allow_Export__c, prm_Title__c, prm_Icon_Name__c, prm_Sortable_Fields__c
@@ -66,7 +74,10 @@ public with sharing class prm_GenericListViewController {
         fieldSet.add('Name');
         fieldList = new List<String>(fieldSet);
 
-        String whereClause = String.isNotBlank(config.prm_Where_Clause__c) ? config.prm_Where_Clause__c : '';
+        String baseWhereClause = String.isNotBlank(config.prm_Where_Clause__c) ? config.prm_Where_Clause__c : '';
+
+        // Describe fields (used for labels and for safe filtering)
+        Map<String, Schema.SObjectField> fieldMap = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap();
 
         // Allowed sortable fields from metadata (root fields only)
         Set<String> allowedSortable = new Set<String>();
@@ -92,10 +103,47 @@ public with sharing class prm_GenericListViewController {
         }
         String dir = (sortDirection != null && sortDirection.toUpperCase() == 'DESC') ? 'DESC' : 'ASC';
 
+        // Build optional date filter (only for Date/DateTime fields on the base object)
+        String filterPredicate = '';
+        Date startDate;
+        Datetime startDateTime;
+
+        if (!String.isBlank(filterRange) && filterRange != 'ALL' && !String.isBlank(filterDateField)) {
+            String fld = filterDateField.trim();
+            if (fieldMap.containsKey(fld)) {
+                Schema.DescribeFieldResult d = fieldMap.get(fld).getDescribe();
+                Schema.DisplayType t = d.getType();
+                if (t == Schema.DisplayType.Date || t == Schema.DisplayType.DateTime) {
+                    Date today = Date.today();
+                    if (filterRange == '3M') {
+                        startDate = today.addMonths(-3);
+                    } else if (filterRange == '6M') {
+                        startDate = today.addMonths(-6);
+                    } else if (filterRange == '1Y') {
+                        startDate = today.addYears(-1);
+                    }
+                    if (startDate != null) {
+                        if (t == Schema.DisplayType.Date) {
+                            filterPredicate = fld + ' >= :startDate';
+                        } else {
+                            startDateTime = DateTime.newInstance(startDate, Time.newInstance(0, 0, 0, 0));
+                            filterPredicate = fld + ' >= :startDateTime';
+                        }
+                    }
+                }
+            }
+        }
+
+        String finalWhere = baseWhereClause;
+        if (!String.isBlank(filterPredicate)) {
+            finalWhere = String.isBlank(finalWhere) ? (' WHERE ' + filterPredicate) : (finalWhere + ' AND ' + filterPredicate);
+        }
+
         // Deterministic ORDER BY with Id tiebreaker
         String orderClause = ' ORDER BY ' + safeSortField + ' ' + dir + (safeSortField == 'Id' ? '' : (', Id ' + dir));
         String soql = 'SELECT ' + String.join(fieldList, ',') +
-                      ' FROM ' + objectName + ' ' + whereClause +
+                      ' FROM ' + objectName +
+                      (String.isBlank(finalWhere) ? '' : (' ' + finalWhere)) +
                       orderClause +
                       ' LIMIT ' + (pageSize + 1) +
                       ' OFFSET ' + pageOffset;
@@ -107,7 +155,6 @@ public with sharing class prm_GenericListViewController {
             queried.remove(queried.size() - 1);
         }
 
-        Map<String, Schema.SObjectField> fieldMap = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap();
         Map<String, String> fieldLabels = new Map<String, String>();
         for (String api : fieldList) {
             String cleanApi = api.trim();
@@ -134,4 +181,42 @@ public with sharing class prm_GenericListViewController {
 
         return result;
     }
+    // DTO used for listing date fields and sorting by label
+    public class DateFieldInfo implements Comparable {
+        @AuraEnabled public String apiName;
+        @AuraEnabled public String label;
+        public DateFieldInfo(String apiName, String label) {
+            this.apiName = apiName;
+            this.label = label;
+        }
+        public Integer compareTo(Object other) {
+            DateFieldInfo o = (DateFieldInfo) other;
+            if (this.label == null && o.label == null) return 0;
+            if (this.label == null) return -1;
+            if (o.label == null) return 1;
+            return this.label.toLowerCase().compareTo(o.label != null ? o.label.toLowerCase() : null);
+        }
+    }
+
+        @AuraEnabled(cacheable=true)
+        public static List<DateFieldInfo> getDateFieldsForConfig(String configName) {
+            prm_ListViewConfig__mdt config = [
+                SELECT prm_Object_API_Name__c
+                FROM prm_ListViewConfig__mdt
+                WHERE DeveloperName = :configName
+                LIMIT 1
+            ];
+            String objectName = config.prm_Object_API_Name__c;
+            Map<String, Schema.SObjectField> fmap = Schema.getGlobalDescribe().get(objectName).getDescribe().fields.getMap();
+            List<DateFieldInfo> result = new List<DateFieldInfo>();
+            for (String api : fmap.keySet()) {
+                Schema.DescribeFieldResult d = fmap.get(api).getDescribe();
+                Schema.DisplayType t = d.getType();
+                if (t == Schema.DisplayType.Date || t == Schema.DisplayType.DateTime) {
+                    result.add(new DateFieldInfo(api, d.getLabel()));
+                }
+            }
+            result.sort();
+            return result;
+        }
 }

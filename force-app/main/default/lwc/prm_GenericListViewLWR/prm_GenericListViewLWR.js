@@ -1,5 +1,6 @@
 import { LightningElement, api, track } from 'lwc';
 import getListViewDataPageable from '@salesforce/apex/prm_GenericListViewController.getListViewDataPageable';
+import getDateFieldsForConfig from '@salesforce/apex/prm_GenericListViewController.getDateFieldsForConfig';
 import { NavigationMixin } from 'lightning/navigation';
 
 export default class Prm_GenericListViewLWR extends NavigationMixin(LightningElement) {
@@ -28,6 +29,12 @@ export default class Prm_GenericListViewLWR extends NavigationMixin(LightningEle
 	isNameSortable = true;
     isExporting = false;
 
+	// Filters
+	@track filtersOpen = false;
+	@track dateFieldOptions = [];
+	selectedDateField = null;
+	selectedDateRange = 'ALL';
+
 	get sortIconName() {
 		return this.sortDirection === 'ASC' ? 'utility:arrowup' : 'utility:arrowdown';
 	}
@@ -39,8 +46,22 @@ export default class Prm_GenericListViewLWR extends NavigationMixin(LightningEle
 		return this.records && this.records.length > 0;
 	}
 
+	get filterLabel() {
+		return this.filtersOpen ? 'Hide Filters' : 'Show Filters';
+	}
+
+	get dateRangeOptions() {
+		return [
+			{ label: 'All Time', value: 'ALL' },
+			{ label: 'Last 3 Months', value: '3M' },
+			{ label: 'Last 6 Months', value: '6M' },
+			{ label: 'Last Year', value: '1Y' }
+		];
+	}
+
 	connectedCallback() {
 		this.loadInitial();
+		this.fetchDateFields();
 	}
 
 	loadInitial() {
@@ -55,9 +76,23 @@ export default class Prm_GenericListViewLWR extends NavigationMixin(LightningEle
 		this.fetchPage();
 	}
 
+	async fetchDateFields() {
+		try {
+			const list = await getDateFieldsForConfig({ configName: this.configName });
+			this.dateFieldOptions = (list || []).map(item => ({
+				label: item.label,
+				value: item.apiName
+			}));
+		} catch (e) {
+			// eslint-disable-next-line no-console
+			console.error('Failed to load date fields', e);
+			this.dateFieldOptions = [];
+		}
+	}
+
 	async fetchPage() {
 		if (this.isLoading || !this.hasMore) {
-			return;
+		 return;
 		}
 		this.isLoading = true;
 		try {
@@ -66,7 +101,9 @@ export default class Prm_GenericListViewLWR extends NavigationMixin(LightningEle
 				limitSize: this.pageSize,
 				offsetSize: this.offset,
 				sortField: this.sortBy,
-				sortDirection: this.sortDirection
+				sortDirection: this.sortDirection,
+				filterDateField: this.selectedDateField,
+				filterRange: this.selectedDateRange
 			});
 
 			this.error = undefined;
@@ -214,7 +251,9 @@ export default class Prm_GenericListViewLWR extends NavigationMixin(LightningEle
 					limitSize: expPageSize,
 					offsetSize: expOffset,
 					sortField: this.sortBy,
-					sortDirection: this.sortDirection
+					sortDirection: this.sortDirection,
+					filterDateField: this.selectedDateField,
+					filterRange: this.selectedDateRange
 				});
 
 				const pageRecords = data.records || [];
@@ -240,5 +279,35 @@ export default class Prm_GenericListViewLWR extends NavigationMixin(LightningEle
 		} finally {
 			this.isExporting = false;
 		}
+	}
+
+	// Filter UI handlers
+	toggleFilters() {
+		this.filtersOpen = !this.filtersOpen;
+	}
+
+	handleDateFieldChange(event) {
+		this.selectedDateField = event.detail.value || null;
+	}
+
+	handleDateRangeChange(event) {
+		this.selectedDateRange = event.detail.value || 'ALL';
+	}
+
+	applyFilters() {
+		// If range is not ALL, ensure a field is selected
+		if (this.selectedDateRange !== 'ALL' && !this.selectedDateField) {
+			this.error = 'Select a Date Field to apply the date range.';
+			return;
+		}
+		this.error = undefined;
+		this.loadInitial();
+	}
+
+	clearFilters() {
+		this.selectedDateField = null;
+		this.selectedDateRange = 'ALL';
+		this.error = undefined;
+		this.loadInitial();
 	}
 }

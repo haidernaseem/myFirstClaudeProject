@@ -10,6 +10,42 @@
 		if:true={allowExport}>
 		</lightning-button>
 
+		<lightning-button
+		slot="actions"
+		variant="neutral"
+		label={filterLabel}
+		icon-name="utility:filterList"
+		onclick={toggleFilters}>
+		</lightning-button>
+
+		<template if:true={filtersOpen}>
+			<div class="slds-box slds-theme_default slds-m-around_small">
+				<div class="slds-grid slds-gutters slds-wrap">
+					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+						<lightning-combobox
+							label="Date Field"
+							placeholder="Select date field"
+							value={selectedDateField}
+							options={dateFieldOptions}
+							onchange={handleDateFieldChange}>
+						</lightning-combobox>
+					</div>
+					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+						<lightning-combobox
+							label="Date Range"
+							value={selectedDateRange}
+							options={dateRangeOptions}
+							onchange={handleDateRangeChange}>
+						</lightning-combobox>
+					</div>
+					<div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-top_large">
+						<lightning-button variant="brand" label="Apply" onclick={applyFilters}></lightning-button>
+						<lightning-button class="slds-m-left_small" label="Clear" onclick={clearFilters}></lightning-button>
+					</div>
+				</div>
+			</div>
+		</template>
+
 		<template if:true={hasData}>
 			<div class="slds-scrollable_y scroll-container" onscroll={handleScroll}>
 				<div class="slds-scrollable_x">
